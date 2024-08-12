@@ -1,0 +1,9 @@
+README.md
+setup.py
+jsonSchema/__init__.py
+jsonSchema/jsonSchema.py
+jsonschema_package.egg-info/PKG-INFO
+jsonschema_package.egg-info/SOURCES.txt
+jsonschema_package.egg-info/dependency_links.txt
+jsonschema_package.egg-info/requires.txt
+jsonschema_package.egg-info/top_level.txt

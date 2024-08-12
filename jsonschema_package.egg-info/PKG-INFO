@@ -1,0 +1,171 @@
+Metadata-Version: 2.1
+Name: jsonschema-package
+Version: 0.1
+Summary: A Python package for JSON schema-based HTTP requests
+Home-page: https://github.com/yourusername/jsonschema_package
+Author: Your Name
+Author-email: your.email@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# object-generation-py
+
+`object-generation-py` is a Python package for creating and managing JSON schema-based HTTP requests. It provides a convenient way to structure and send HTTP requests using JSON schemas, making it easier to interact with APIs and process responses.
+
+## Installation
+
+You can install the package from PyPI using pip:
+
+```bash
+pip install object-generation-py
+```
+
+## Usage
+
+### Importing the Package
+
+Start by importing the necessary classes from the package:
+
+```python
+from object_generation_py.jsonschema import Client, Definition, RequestFormat, Focus, Res
+```
+
+### Creating a Client
+
+To create a client, you need an API key and a base URL for your API:
+
+```python
+client = Client(api_key='your_api_key', base_url='https://api.example.com')
+```
+
+### Defining a JSON Schema
+
+You can define a JSON schema using the `Definition` class. The schema describes the structure of the JSON data you want to send or receive.
+
+```python
+definition = Definition(
+    data_type='object',
+    instruction='Generate a response based on the following fields.',
+    properties={
+        'name': Definition(data_type='string'),
+        'age': Definition(data_type='integer')
+    },
+    required=['name', 'age']
+)
+```
+
+### Sending a Request
+
+To send a request using the client, provide a prompt and the `Definition` object:
+
+```python
+response = client.send_request(prompt="Generate a user profile", definition=definition)
+```
+
+### Handling the Response
+
+The response is returned as an instance of the `Response` class. You can access the data and the cost of the request:
+
+```python
+print("Response data:", response.data)
+print("Cost in USD:", response.usd_cost)
+```
+
+### Using Focus
+
+The `Focus` class allows you to narrow down the request to specific fields:
+
+```python
+focus = Focus(
+    prompt="Focus on these fields",
+    fields=["name", "age"],
+    keep_original=True
+)
+```
+
+### Custom HTTP Requests
+
+If you need to send a custom HTTP request, you can use the `RequestFormat` class:
+
+```python
+request_format = RequestFormat(
+    url='https://api.example.com/custom-endpoint',
+    method='POST',
+    headers={'Content-Type': 'application/json'},
+    body={'key': 'value'},
+    authorization='Bearer your_api_key'
+)
+
+custom_definition = Definition(
+    data_type='object',
+    req=request_format
+)
+
+response = custom_definition.execute_request(current_gen={'additional_field': 'value'})
+print("Custom Response:", response.text)
+```
+
+### Extracting Values from Responses
+
+You can extract specific values from an HTTP response using the `Res` class:
+
+```python
+res = Res.extract_value(response)
+print("Extracted Value:", res.value)
+print("Other Data:", res.other)
+```
+
+## Example Workflow
+
+Here’s an example workflow that puts everything together:
+
+```python
+from object_generation_py.jsonschema import Client, Definition, RequestFormat, Focus, Res
+
+# Initialize the client
+client = Client(api_key='your_api_key', base_url='https://api.example.com')
+
+# Define the schema
+definition = Definition(
+    data_type='object',
+    instruction='Generate a user profile',
+    properties={
+        'name': Definition(data_type='string'),
+        'age': Definition(data_type='integer')
+    },
+    required=['name', 'age']
+)
+
+# Send the request
+response = client.send_request(prompt="Generate a user profile", definition=definition)
+
+# Print the response data and cost
+print("Response data:", response.data)
+print("Cost in USD:", response.usd_cost)
+
+# Execute a custom request
+request_format = RequestFormat(
+    url='https://api.example.com/custom-endpoint',
+    method='POST',
+    headers={'Content-Type': 'application/json'},
+    body={'key': 'value'},
+    authorization='Bearer your_api_key'
+)
+
+custom_definition = Definition(
+    data_type='object',
+    req=request_format
+)
+
+custom_response = custom_definition.execute_request(current_gen={'additional_field': 'value'})
+print("Custom Response:", custom_response.text)
+
+# Extract specific value from response
+res = Res.extract_value(custom_response)
+print("Extracted Value:", res.value)
+print("Other Data:", res.other)
+```
+
