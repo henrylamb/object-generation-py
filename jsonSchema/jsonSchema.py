@@ -3,14 +3,12 @@ import requests
 
 
 class Client:
-    def __init__(self, api_key: str, base_url: str):
-        self.api_key = api_key
+    def __init__(self, password: str, base_url: str):
+        self.password = password
         self.base_url = base_url
 
     def send_http_request(self, prompt: str, definition: 'Definition') -> requests.Response:
         url = self.base_url
-        if definition.req:
-            url = definition.req.url
 
         request_body = {
             "prompt": prompt,
@@ -19,11 +17,11 @@ class Client:
 
         try:
             response = requests.post(
-                url,
+                url+"/objectGen",
                 json=request_body,
                 headers={
                     "Content-Type": "application/json",
-                    "Authorization": f"Bearer {self.api_key}",
+                    "Authorization": f"Bearer {self.password}",
                 },
             )
             response.raise_for_status()
